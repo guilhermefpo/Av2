@@ -66,3 +66,34 @@ tipo: descrição curta e clara
 ```
 
 ---
+
+## 📂 Estrutura de Pastas
+
+```
+ Av2_gerson
+
+├── 📁 front_end
+│ ├── 📁 src
+│ │ ├── 📄 App.tsx
+│ │ ├── 🎨 index.css
+│ │ └── 📄 main.tsx
+│ ├── 📄 eslint.config.js
+│ ├── 🌐 index.html
+│ ├── ⚙️ package-lock.json
+│ ├── ⚙️ package.json
+│ ├── ⚙️ tsconfig.app.json
+│ ├── ⚙️ tsconfig.json
+│ ├── ⚙️ tsconfig.node.json
+│ └── 📄 vite.config.ts
+├── 📁 prototipo
+│ ├── 📁 MockFlow
+│ │ ├── 🖼️ Gestão AV2.png
+│ │ └── 🖼️ Tela de Login AV2.png
+│ └── 📁 figma
+│ └── 📄 Figma_Av2.txt
+├── ⚙️ .gitignore
+└── 📝 README.md
+
+```
+
+---
