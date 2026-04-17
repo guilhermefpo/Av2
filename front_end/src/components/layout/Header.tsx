@@ -1,18 +1,35 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import styles from "./Header.module.css";
+import { RxAvatar } from "react-icons/rx";
 
-function Header() {
+interface NavLink {
+  to: string;
+  label: string;
+}
+
+const links: NavLink[] = [
+  { to: "/gestao", label: "Gestão" },
+  { to: "/montagem", label: "Montagem" },
+];
+
+export default function Header() {
   return (
-    <header>
-      <nav>
-        <li>
-          <Link to="/gestao">Gestão</Link>
-        </li>
-        <li>
-          <Link to="/montagem ">Montagem </Link>
-        </li>
+    <header className={styles.header}>
+      <nav className={styles.nav}>
+        {links.map((link) => (
+          <motion.div
+            key={link.to}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link className={styles.link} to={link.to}>
+              {link.label}
+            </Link>
+          </motion.div>
+        ))}
       </nav>
+      <RxAvatar className={styles.avatar} />
     </header>
   );
 }
-
-export default Header;
