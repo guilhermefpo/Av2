@@ -1,0 +1,42 @@
+.pageStyle {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("../../assets/aerocodelogo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+} /* Cinema - Skrillex */
+
+.input_style {
+  margin: 10px 0;
+  padding: 10px;
+  width: 200px;
+  border-radius: 4px;
+  border: 3px solid #0055aa;
+  border-radius: 1em;
+  outline: none;
+}
+
+.button_style {
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.button_style:hover {
+  background-color: #003366;
+}
