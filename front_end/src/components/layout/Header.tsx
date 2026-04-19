@@ -29,7 +29,11 @@ export default function Header() {
           </motion.div>
         ))}
       </nav>
-      <RxAvatar className={styles.avatar} />
+      <Link to="/" className={styles.avatar} title="Voltar ao login">
+        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <RxAvatar className={styles.avatar} size={32} />
+        </motion.div>
+      </Link>
     </header>
   );
 }
