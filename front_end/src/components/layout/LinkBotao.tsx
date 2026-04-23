@@ -2,8 +2,6 @@ import styles from "./LinkBotao.module.css";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const MotionLink = motion(Link);
-
 interface paramsbotao {
   to: string;
   text: string;
