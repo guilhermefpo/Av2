@@ -3,32 +3,38 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 9em;
-  padding: 0 1rem;
+  height: 70px;
+  padding: 0 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .nav {
   background-color: #003366;
-  border: 1px solid black;
+  border: 2px solid #0055aa;
   border-radius: 9px;
   display: flex;
-  gap: 10px;
+  overflow: hidden;
 }
 
 .link {
   display: inline-block;
   color: white;
   text-decoration: none;
-  padding: 8px 16px;
-}
-
-.avatar {
-  color: black;
-  height: 50px;
-  width: 50px;
-  margin-right: 2rem;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: background 0.3s;
 }
 
 .link:hover {
-  text-decoration: underline;
+  background-color: #0055aa;
+  text-decoration: none;
+}
+
+.avatar {
+  color: #003366;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
 }
