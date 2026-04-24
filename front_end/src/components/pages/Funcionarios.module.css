@@ -1,0 +1,30 @@
+.pageStyle {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("../../assets/aerocodelogo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my_link {
+  background-color: #003366;
+  color: white !important;
+  text-decoration: none !important;
+  border: 2px solid #0055aa;
+  display: inline-block;
+  transition: 0.3s;
+  text-align: center;
+  border-radius: 9px;
+}
+
+.my_link:hover {
+  background-color: #0055aa;
+  text-decoration: none;
+  transform: translateY(-2px);
+}

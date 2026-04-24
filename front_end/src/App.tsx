@@ -3,6 +3,9 @@ import Header from "./components/layout/Header";
 import Login from "./components/pages/Login";
 import Gestao from "./components/pages/Gestao";
 import Montagem from "./components/pages/Montagem";
+import Pecas from "./components/pages/Pecas";
+import Testes from "./components/pages/Testes";
+import Funcionarios from "./components/pages/Funcionarios";
 import "./index.css";
 
 function App() {
@@ -26,6 +29,33 @@ function App() {
             <>
               <Header />
               <Montagem />
+            </>
+          }
+        />
+        <Route
+          path="/pecas"
+          element={
+            <>
+              <Header />
+              <Pecas />
+            </>
+          }
+        />
+        <Route
+          path="/testes"
+          element={
+            <>
+              <Header />
+              <Testes />
+            </>
+          }
+        />
+        <Route
+          path="/funcionarios"
+          element={
+            <>
+              <Header />
+              <Funcionarios />
             </>
           }
         />
