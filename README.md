@@ -72,28 +72,67 @@ tipo: descrição curta e clara
 ```
  Av2_gerson
 
+├── 📁 Docs
+│   └── 📕 Documentação Av2.pdf
 ├── 📁 front_end
-│ ├── 📁 src
-│ │ ├── 📄 App.tsx
-│ │ ├── 🎨 index.css
-│ │ └── 📄 main.tsx
-│ ├── 📄 eslint.config.js
-│ ├── 🌐 index.html
-│ ├── ⚙️ package-lock.json
-│ ├── ⚙️ package.json
-│ ├── ⚙️ tsconfig.app.json
-│ ├── ⚙️ tsconfig.json
-│ ├── ⚙️ tsconfig.node.json
-│ └── 📄 vite.config.ts
-├── 📁 prototipo
-│ ├── 📁 MockFlow
-│ │ ├── 🖼️ Gestão AV2.png
-│ │ └── 🖼️ Tela de Login AV2.png
-│ └── 📁 figma
-│ └── 📄 Figma_Av2.txt
+│   ├── 📁 public
+│   │   └── 📄 aerocode.ico
+│   ├── 📁 src
+│   │   ├── 📁 assets
+│   │   │   ├── 🖼️ aerocodelogo.png
+│   │   │   └── 🖼️ aviao.png
+│   │   ├── 📁 components
+│   │   │   ├── 📁 layout
+│   │   │   │   ├── 🎨 Cards.module.css
+│   │   │   │   ├── 📄 Cards.tsx
+│   │   │   │   ├── 🎨 Header.module.css
+│   │   │   │   ├── 📄 Header.tsx
+│   │   │   │   ├── 🎨 LinkBotao.module.css
+│   │   │   │   ├── 📄 LinkBotao.tsx
+│   │   │   │   ├── 🎨 TabelaAvioes.module.css
+│   │   │   │   └── 📄 TabelaAvioes.tsx
+│   │   │   └── 📁 pages
+│   │   │       ├── 🎨 Funcionarios.module.css
+│   │   │       ├── 📄 Funcionarios.tsx
+│   │   │       ├── 🎨 Gestao.module.css
+│   │   │       ├── 📄 Gestao.tsx
+│   │   │       ├── 🎨 Login.module.css
+│   │   │       ├── 📄 Login.tsx
+│   │   │       ├── 🎨 Montagem.module.css
+│   │   │       ├── 📄 Montagem.tsx
+│   │   │       ├── 🎨 Pecas.module.css
+│   │   │       ├── 📄 Pecas.tsx
+│   │   │       ├── 🎨 Testes.module.css
+│   │   │       └── 📄 Testes.tsx
+│   │   ├── 📄 App.tsx
+│   │   ├── 🎨 index.css
+│   │   └── 📄 main.tsx
+│   ├── 📄 eslint.config.js
+│   ├── 🌐 index.html
+│   ├── ⚙️ package-lock.json
+│   ├── ⚙️ package.json
+│   ├── ⚙️ tsconfig.app.json
+│   ├── ⚙️ tsconfig.json
+│   ├── ⚙️ tsconfig.node.json
+│   └── 📄 vite.config.ts
+├── 📁 prototype
+│   ├── 📁 Logo
+│   │   └── 🖼️ aerocodelogo.png
+│   ├── 📁 MockFlow
+│   │   ├── 🖼️ Gestão Av2.png
+│   │   ├── 🖼️ Montagem Av2.png
+│   │   └── 🖼️ Tela de Login AV2.png
+│   ├── 📁 favicon
+│   │   ├── 🖼️ android-chrome-192x192.png
+│   │   ├── 🖼️ android-chrome-512x512.png
+│   │   ├── 🖼️ apple-touch-icon.png
+│   │   ├── 🖼️ favicon-16x16.png
+│   │   ├── 🖼️ favicon-32x32.png
+│   │   └── 📄 site.webmanifest
+│   └── 📁 figma
+│       └── 📄 Figma_Av2.txt
 ├── ⚙️ .gitignore
 └── 📝 README.md
-
 ```
 
 ---
