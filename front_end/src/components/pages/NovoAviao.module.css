@@ -1,0 +1,117 @@
+.pageStyle {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("../../assets/aerocodelogo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 90%;
+  max-width: 1200px;
+  align-items: center;
+  padding: 3rem;
+  border-radius: 12px;
+  border: 4px solid #003366;
+}
+
+.aviaoImage {
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+.aviaoImage img {
+  max-width: 90%;
+  height: auto;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 2rem;
+}
+
+.title {
+  color: #003366;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.input_style {
+  margin: 8px 0;
+  padding: 12px;
+  width: 100%;
+  border: 2px solid #0055aa;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input_style:focus {
+  border-color: #00d4ff;
+}
+
+.textarea_style {
+  margin: 8px 0;
+  padding: 12px;
+  width: 100%;
+  height: 100px;
+  border: 2px solid #0055aa;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.3s;
+  resize: none;
+}
+
+.textarea_style:focus {
+  border-color: #00d4ff;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.btnSalvar {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnSalvar:hover {
+  background-color: #0055aa;
+}
+
+.cancelarLink {
+  color: #003366;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.cancelarLink:hover {
+  text-decoration: underline;
+}

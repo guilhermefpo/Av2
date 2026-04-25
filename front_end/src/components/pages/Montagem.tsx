@@ -8,13 +8,12 @@ export default function Montagem() {
     to: string;
     label: string;
   }
-
   const links: NavLink[] = [
+    { to: "/novo-aviao", label: "Novo Projeto" },
     { to: "/pecas", label: "Peças" },
     { to: "/testes", label: "Testes" },
     { to: "/funcionarios", label: "Funcionários" },
   ];
-
   return (
     <>
       <section className={styles.pageStyle}>

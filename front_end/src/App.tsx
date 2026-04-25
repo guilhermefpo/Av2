@@ -6,6 +6,11 @@ import Montagem from "./components/pages/Montagem";
 import Pecas from "./components/pages/Pecas";
 import Testes from "./components/pages/Testes";
 import Funcionarios from "./components/pages/Funcionarios";
+import NovoAviao from "./components/pages/NovoAviao";
+import CadastroUsuario from "./components/pages/CadastroUsuario";
+import NovaPeca from "./components/pages/NovoPeca";
+import NovoTeste from "./components/pages/NovoTeste";
+import NovoFuncionario from "./components/pages/NovoFuncionario";
 import "./index.css";
 
 function App() {
@@ -13,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/cadastro" element={<CadastroUsuario />} />
 
         <Route
           path="/gestao"
@@ -56,6 +62,42 @@ function App() {
             <>
               <Header />
               <Funcionarios />
+            </>
+          }
+        />
+        <Route
+          path="/novo-aviao"
+          element={
+            <>
+              <Header />
+              <NovoAviao />
+            </>
+          }
+        />
+        <Route
+          path="/nova-peca"
+          element={
+            <>
+              <Header />
+              <NovaPeca />
+            </>
+          }
+        />
+        <Route
+          path="/novo-teste"
+          element={
+            <>
+              <Header />
+              <NovoTeste />
+            </>
+          }
+        />
+        <Route
+          path="/novo-funcionario"
+          element={
+            <>
+              <Header />
+              <NovoFuncionario />
             </>
           }
         />

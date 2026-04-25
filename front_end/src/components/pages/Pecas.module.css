@@ -1,30 +1,79 @@
 .pageStyle {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
     url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  height: 100vh;
-  width: 100vw;
+  min-height: calc(100vh - 70px);
+  padding: 2rem;
   display: flex;
-  align-items: center;
   justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem;
+  border-radius: 15px;
+  border: 4px solid #003366;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #003366;
+  padding-bottom: 1rem;
+}
+
+.header h1 {
+  color: #003366;
+  margin: 0;
 }
 
 .my_link {
   background-color: #003366;
-  color: white !important;
-  text-decoration: none !important;
-  border: 2px solid #0055aa;
-  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
   transition: 0.3s;
-  text-align: center;
-  border-radius: 9px;
 }
 
 .my_link:hover {
   background-color: #0055aa;
-  text-decoration: none;
-  transform: translateY(-2px);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela th {
+  background-color: #003366;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.tabela td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.Emestoque {
+  color: green;
+  font-weight: bold;
+}
+.Esgotado {
+  color: red;
+  font-weight: bold;
+}
+.Pedidosolicitado {
+  color: orange;
+  font-weight: bold;
 }
