@@ -37,6 +37,7 @@ function Pecas() {
               <th>Nome da Peça</th>
               <th>Qtd.</th>
               <th>Status</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -47,6 +48,20 @@ function Pecas() {
                 <td>{peca.quantidade}</td>
                 <td className={styles[peca.status.replace(/\s/g, "")]}>
                   {peca.status}
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      if (
+                        window.confirm(`Deseja excluir a peça ${peca.nome}?`)
+                      ) {
+                        alert("Peça removida ");
+                      }
+                    }}
+                    className={styles.btnDeletar}
+                  >
+                    Excluir
+                  </button>
                 </td>
               </tr>
             ))}

@@ -1,7 +1,5 @@
 .pageStyle {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-    url("../../assets/aerocodelogo.png");
+  background-image: url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -56,5 +54,4 @@
   max-width: 90%;
   height: auto;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
-  box-shadow: 1px 2px 2px 2px rgb(0, 0, 0, 0.2);
 }

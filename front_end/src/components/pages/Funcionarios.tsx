@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Funcionarios.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Funcionario {
   id: number;
@@ -14,45 +14,66 @@ const equipe: Funcionario[] = [
   {
     id: 101,
     nome: "Carlos Andrade",
-    cargo: "Engenheiro Aeronáutico",
+    cargo: "Engenheiro",
     setor: "Montagem",
     status: "Ativo",
   },
   {
     id: 102,
     nome: "Ana Martins",
-    cargo: "Técnica de Sistemas",
+    cargo: "Operador",
     setor: "Testes",
     status: "Ativo",
   },
   {
     id: 103,
     nome: "Ricardo Souza",
-    cargo: "Inspetor de Qualidade",
+    cargo: "ADM",
     setor: "Segurança",
     status: "Em Férias",
   },
   {
     id: 104,
     nome: "Beatriz Lima",
-    cargo: "Mecânica de Fuselagem",
+    cargo: "Engenheiro",
     setor: "Manutenção",
     status: "Ativo",
   },
 ];
 
 function Funcionarios() {
+  const navigate = useNavigate();
+
+
+  const cargoUsuario = localStorage.getItem("@Aerocode:cargo") || "Operador";
+  const eAdmin = cargoUsuario === "ADM";
+
+  const handleEdit = (id: number) => navigate(`/editar-funcionario/${id}`);
+
+  const handleDelete = (nome: string) => {
+    if (window.confirm(`Excluir ${nome}?`)) alert("Removido!");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("@Aerocode:cargo");
+    navigate("/");
+  };
+
   return (
     <div className={styles.pageStyle}>
       <div className={styles.container}>
         <header className={styles.header}>
           <h1>Quadro de Funcionários</h1>
-          <Link to="/montagem" className={styles.my_link}>
-            Voltar
-          </Link>
-          <Link to="/novo-funcionario" className={styles.my_link}>
-            + Adicionar Funcionário
-          </Link>
+          <div className={styles.headerBtns}>
+            <button onClick={handleLogout} className={styles.btnSair}>
+              Sair
+            </button>
+            {eAdmin && (
+              <Link to="/novo-funcionario" className={styles.my_link_add}>
+                + Novo
+              </Link>
+            )}
+          </div>
         </header>
 
         <div className={styles.listaFuncionarios}>
@@ -64,11 +85,35 @@ function Funcionarios() {
                   {f.cargo} | {f.setor}
                 </span>
               </div>
-              <div className={styles.statusBadge}>
-                <span
-                  className={`${styles.dot} ${styles[f.status.replace(" ", "")]}`}
-                ></span>
-                {f.status}
+
+              <div className={styles.acoes}>
+                <div className={styles.statusBadge}>
+                  <span
+                    className={`${styles.dot} ${styles[f.status.replace(" ", "")]}`}
+                  ></span>
+                  {f.status}
+                </div>
+
+                <div className={styles.btnGroup}>
+                  {eAdmin ? (
+                    <>
+                      <button
+                        className={styles.btnEditar}
+                        onClick={() => handleEdit(f.id)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className={styles.btnDeletar}
+                        onClick={() => handleDelete(f.nome)}
+                      >
+                        Excluir
+                      </button>
+                    </>
+                  ) : (
+                    <span className={styles.tagLock}>🔒 Apenas Leitura</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}

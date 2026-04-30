@@ -1,48 +1,47 @@
 .pageStyle {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-    url("../../assets/aerocodelogo.png");
+  background-image: url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
-  width: 100vw;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .cadastroCard {
-  padding: 2rem;
-  border-radius: 12px;
   text-align: center;
-  border: 4px solid #003366;
   width: 100%;
-  max-width: 450px;
+  max-width: 400px;
 }
 
 .title {
   color: #003366;
-  margin-bottom: 0.5rem;
   font-size: 2.5rem;
+  margin: 0;
 }
 
 .subtitle {
-  color: #555;
-  margin-bottom: 1.5rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.border {
+  border: 4px solid #003366;
+  border-radius: 15px;
+  padding: 25px;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .input_style {
-  margin: 8px 0;
   padding: 12px;
-  width: 100%;
-  border: 2px solid #0055aa;
-  border-radius: 10px;
+  border: 3px solid #0055aa;
+  border-radius: 1em;
   outline: none;
-  transition: 0.3s;
+  font-size: 0.9rem;
 }
 
 .input_style:focus {
@@ -50,27 +49,26 @@
 }
 
 .actions {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
 }
 
 .btnCadastro {
   background-color: #003366;
   color: white;
   border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 1em;
   font-weight: bold;
   cursor: pointer;
-  width: 100%;
   transition: 0.3s;
 }
 
 .btnCadastro:hover {
   background-color: #0055aa;
+  transform: scale(1.02);
 }
 
 .loginLink {

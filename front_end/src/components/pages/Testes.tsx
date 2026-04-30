@@ -52,6 +52,16 @@ function Testes() {
               <span className={`${styles.status} ${styles[teste.resultado]}`}>
                 {teste.resultado}
               </span>
+              <button
+                onClick={() => {
+                  if (window.confirm(`Deseja excluir o teste ${teste.nome}?`)) {
+                    alert("Teste removida ");
+                  }
+                }}
+                className={styles.btnDeletar}
+              >
+                Excluir
+              </button>
             </div>
           ))}
         </div>

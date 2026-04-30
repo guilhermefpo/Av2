@@ -11,6 +11,7 @@ import CadastroUsuario from "./components/pages/CadastroUsuario";
 import NovaPeca from "./components/pages/NovoPeca";
 import NovoTeste from "./components/pages/NovoTeste";
 import NovoFuncionario from "./components/pages/NovoFuncionario";
+import EditarFuncionario from "./components/pages/EditarFuncionario";
 import "./index.css";
 
 function App() {
@@ -98,6 +99,15 @@ function App() {
             <>
               <Header />
               <NovoFuncionario />
+            </>
+          }
+        />
+        <Route
+          path="/editar-funcionario/:id"
+          element={
+            <>
+              <Header />
+              <EditarFuncionario />
             </>
           }
         />

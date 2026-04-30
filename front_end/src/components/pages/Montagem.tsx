@@ -3,8 +3,8 @@ import styles from "./Montagem.module.css";
 import LinkBotao from "../layout/LinkBotao";
 import { Link } from "react-router-dom";
 import aviao from "../../assets/aviao.png";
-import aviao2 from "../../assets/aviao2.jpg";
-import aviao3 from "../../assets/aviao3.jpg";
+import aviao2 from "../../assets/aviao2.png";
+import aviao3 from "../../assets/aviao3.png";
 
 export default function Montagem() {
   interface NavLink {

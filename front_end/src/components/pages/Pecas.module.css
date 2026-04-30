@@ -1,7 +1,5 @@
 .pageStyle {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-    url("../../assets/aerocodelogo.png");
+  background-image: url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -63,6 +61,37 @@
 .tabela td {
   padding: 12px;
   border-bottom: 1px solid #ddd;
+}
+
+.btnDeletar {
+  background-color: #ff4d4d;
+  color: white;
+  margin-left: 10px;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnDeletar:hover {
+  background-color: #cc0000;
+}
+
+.btnDeletarPequeno {
+  margin-top: 15px;
+  background: transparent;
+  color: #ff4d4d;
+  border: 1px solid #ff4d4d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.btnDeletarPequeno:hover {
+  background: #ff4d4d;
+  color: white;
 }
 
 .Emestoque {

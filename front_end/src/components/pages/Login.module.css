@@ -1,7 +1,5 @@
 .pageStyle {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-    url("../../assets/aerocodelogo.png");
+  background-image: url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -23,45 +21,43 @@
 
 .loginCard h2 {
   color: #003366;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-size: 2.5rem;
 }
 
 .border {
   border: 4px solid #003366;
   border-radius: 15px;
-  margin: 10px;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.5);
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .input_style {
   margin: 10px 0;
   padding: 12px;
-  width: 220px;
+  width: 250px;
   border: 3px solid #0055aa;
   border-radius: 1em;
   outline: none;
+  background-color: white;
+}
+
+.btnLogar {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 1em;
+  font-weight: bold;
+  cursor: pointer;
   transition: 0.3s;
 }
 
-.input_style:focus {
-  border-color: #00d4ff;
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
-}
-
-.linkContainer {
-  margin-top: 15px;
-}
-
-.linkCadastro {
-  color: #003366;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: 0.3s;
-}
-
-.linkCadastro:hover {
-  color: #0055aa;
-  text-decoration: underline;
+.btnLogar:hover {
+  background-color: #0055aa;
+  transform: scale(1.02);
 }

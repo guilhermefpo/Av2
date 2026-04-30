@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./NovoAviao.module.css";
 import aviaoImg from "../../assets/aviao.png";
 
 const NovoAviao: React.FC = () => {
   const navigate = useNavigate();
+
+  const cargo = localStorage.getItem("@Aerocode:cargo") || "Operador";
+
+  const eAdmin = cargo === "ADM";
+
+  useEffect(() => {
+    if (!eAdmin) {
+      alert(
+        "Acesso Negado: Apenas Administradores podem iniciar novos projetos.",
+      );
+      navigate("/gestao");
+    }
+  }, [eAdmin, navigate]);
+
   const [modelo, setModelo] = useState("");
   const [status, setStatus] = useState<"Iniciado" | "Em Teste" | "Atrasado">(
     "Em Teste",
@@ -14,9 +28,15 @@ const NovoAviao: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!eAdmin) return;
+
     console.log("Cadastrando avião:", { modelo, status, data, descricao });
+    alert("Projeto iniciado com sucesso na Aerocode!");
     navigate("/gestao");
   };
+
+  if (!eAdmin) return null;
 
   return (
     <div className={styles.pageStyle}>
@@ -27,7 +47,8 @@ const NovoAviao: React.FC = () => {
         <div className={styles.formContainer}>
           <h2 className={styles.title}>Novo Projeto</h2>
           <p className={styles.subtitle}>
-            Inicie a montagem de uma nova aeronave
+            Inicie a montagem de uma nova aeronave (Perfil:{" "}
+            <strong>{cargo}</strong>)
           </p>
 
           <form onSubmit={handleSubmit}>

@@ -1,7 +1,5 @@
 .pageStyle {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-    url("../../assets/aerocodelogo.png");
+  background-image: url("../../assets/aerocodelogo.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -14,6 +12,7 @@
 .container {
   width: 100%;
   max-width: 800px;
+
   padding: 2rem;
   border-radius: 15px;
   border: 4px solid #003366;
@@ -32,6 +31,12 @@
 .header h1 {
   color: #003366;
   font-size: 1.8rem;
+  margin: 0;
+}
+
+.headerBtns {
+  display: flex;
+  gap: 10px;
 }
 
 .my_link {
@@ -41,6 +46,22 @@
   padding: 8px 20px;
   border-radius: 8px;
   font-weight: bold;
+  transition: 0.3s;
+}
+
+.my_link_add {
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.my_link:hover,
+.my_link_add:hover {
+  opacity: 0.85;
 }
 
 .listaFuncionarios {
@@ -53,25 +74,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 15px 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
-  transition: 0.2s;
+  transition: 0.2s ease-in-out;
+  background-color: #fff;
 }
 
 .itemFuncionario:hover {
-  border-color: #0055aa;
-  background-color: #f9f9f9;
+  border-color: #003366;
+  transform: translateY(-2px);
 }
 
 .info {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .info strong {
   color: #003366;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .info span {
@@ -79,12 +102,21 @@
   font-size: 0.9rem;
 }
 
+.acoes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
 .statusBadge {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: bold;
   color: #444;
+  text-transform: uppercase;
 }
 
 .dot {
@@ -93,12 +125,97 @@
   border-radius: 50%;
 }
 
+.btnGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.btnEditar {
+  background-color: #f1f1f1;
+  color: #003366;
+  border: 1px solid #003366;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btnDeletar {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .Ativo {
   background-color: #28a745;
+  box-shadow: 0 0 5px #28a745;
 }
 .EmFérias {
   background-color: #ffc107;
+  box-shadow: 0 0 5px #ffc107;
 }
 .Licença {
   background-color: #dc3545;
+  box-shadow: 0 0 5px #dc3545;
+}
+
+/* ... seus códigos anteriores ... */
+
+.headerBtns {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btnSair {
+  background: none;
+  border: 1px solid #003366;
+  color: #003366;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btnSair:hover {
+  background-color: #f0f0f0;
+}
+
+.tagLock {
+  font-size: 0.7rem;
+  color: #888;
+  background: #f9f9f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loginPage {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #003366;
+}
+
+.loginCard {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  text-align: center;
+  width: 350px;
+}
+
+.logoPlaceholder {
+  font-weight: 900;
+  font-size: 2rem;
+  color: #003366;
+  margin-bottom: 1rem;
 }
