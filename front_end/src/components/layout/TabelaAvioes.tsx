@@ -1,62 +1,68 @@
+import { useEffect, useState } from "react";
+import { Aeronave } from "..";
+import { TipoAeronave } from "..";
 import styles from "./TabelaAvioes.module.css";
 
-interface Aviao {
-  id: number;
-  modelo: string;
-  status: "Concluído" | "Em Teste" | "Atrasado";
-  ultimaAtualizacao: string;
-}
-
-const dadosDummy: Aviao[] = [
-  {
-    id: 1,
-    modelo: "Boeing 737 Max",
-    status: "Em Teste",
-    ultimaAtualizacao: "19/04/2026",
-  },
-  {
-    id: 2,
-    modelo: "Embraer E195-E2",
-    status: "Concluído",
-    ultimaAtualizacao: "18/04/2026",
-  },
-  {
-    id: 3,
-    modelo: "Airbus A320neo",
-    status: "Atrasado",
-    ultimaAtualizacao: "17/04/2026",
-  },
-];
-
 export function TabelaAvioes() {
+  const [avioes, setAvioes] = useState<Aeronave[]>([]);
+
+  useEffect(() => {
+    const dadosSalvos = localStorage.getItem("@Aerocode:avioes_db");
+    if (dadosSalvos) {
+      setAvioes(JSON.parse(dadosSalvos));
+    }
+  }, []);
+
+  const selecionarAviao = (codigo: string) => {
+    localStorage.setItem("@Aerocode:aviao_selecionado", codigo);
+
+    window.dispatchEvent(new Event("storage"));
+    alert(`Aeronave ${codigo} selecionada para monitoramento.`);
+  };
+
   return (
     <div className={styles.container}>
+      <h3 className={styles.titleTable}>Aeronaves em Inventário</h3>
       <table className={styles.tabela}>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Modelo da Aeronave</th>
-            <th>Status de Produção</th>
-            <th>Data</th>
+            <th>Código</th>
+            <th>Modelo</th>
+            <th>Tipo</th>
+            <th>Capacidade</th>
+            <th>Alcance</th>
+            <th>Status Geral</th>
           </tr>
         </thead>
         <tbody>
-          {dadosDummy.map((aviao) => (
-            <tr key={aviao.id}>
-              <td>#{aviao.id}</td>
+          {avioes.map((aviao) => (
+            <tr
+              key={aviao.codigo}
+              onClick={() => selecionarAviao(aviao.codigo)}
+              className={styles.linhaInterativa}
+              title="Clique para gerenciar esta aeronave"
+            >
+              <td>
+                <strong>{aviao.codigo}</strong>
+              </td>
               <td>{aviao.modelo}</td>
               <td>
                 <span
-                  className={`${styles.status} ${styles[aviao.status.replace(/\s/g, "")]}`}
+                  className={`${styles.badge} ${styles[aviao.tipo.toLowerCase()]}`}
                 >
-                  {aviao.status}
+                  {aviao.tipo}
                 </span>
               </td>
-              <td>{aviao.ultimaAtualizacao}</td>
+              <td>{aviao.capacidade} pax</td>
+              <td>{aviao.alcance} km</td>
+              <td>{aviao.dataEntrega || "Em Linha de Montagem"}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {avioes.length === 0 && (
+        <p className={styles.empty}>Nenhuma aeronave registrada.</p>
+      )}
     </div>
   );
 }

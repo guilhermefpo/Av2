@@ -1,48 +1,52 @@
-.pageMontagem {
+.container {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.statusBanner {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  border-radius: 12px;
-  color: white;
-  margin-top: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.5s ease;
-}
-
-.icon {
-  font-size: 3rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px;
-  border-radius: 50%;
-}
-
-.cardInfo {
-  background: white;
-  border: 2px solid #003366;
-  border-radius: 15px;
-  padding: 30px;
-  margin-top: 30px;
-}
-
-.selectStatus {
-  padding: 12px;
-  font-size: 1.1rem;
+  background: #fff;
   border-radius: 8px;
-  border: 2px solid #003366;
-  width: 100%;
-  max-width: 300px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.title {
+  color: #003366;
+  border-bottom: 2px solid #003366;
+  padding-bottom: 10px;
+}
+.gridEtapas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+.cardEtapa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-left: 8px solid #888;
+  background: #f4f4f4;
+  border-radius: 4px;
+}
+
+.pendente {
+  border-left-color: #888;
+}
+.andamento {
+  border-left-color: #ffc107;
+  background: #fffde7;
+}
+.concluida {
+  border-left-color: #28a745;
+  background: #e8f5e9;
+}
+
+.select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
   cursor: pointer;
 }
-
-.aviso {
-  display: block;
-  margin-top: 10px;
-  color: #666;
+.lockMsg {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 15px;
+  text-align: center;
 }

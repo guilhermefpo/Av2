@@ -1,66 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Testes.module.css";
 import { Link } from "react-router-dom";
+import { TesteQualidade } from "../index";
 
-interface TesteQualidade {
-  id: string;
-  aeronave: string;
-  tipo: "Segurança" | "Sistemas" | "Motor";
-  resultado: "Aprovado" | "Pendente" | "Falha";
-}
+const Testes: React.FC = () => {
+  const [testes, setTestes] = useState<TesteQualidade[]>([]);
 
-const listaTestes: TesteQualidade[] = [
-  {
-    id: "T-001",
-    aeronave: "Boeing 737",
-    tipo: "Segurança",
-    resultado: "Aprovado",
-  },
-  { id: "T-002", aeronave: "Airbus A320", tipo: "Motor", resultado: "Falha" },
-  {
-    id: "T-003",
-    aeronave: "Embraer 195",
-    tipo: "Sistemas",
-    resultado: "Pendente",
-  },
-];
+  useEffect(() => {
+    const salvo = localStorage.getItem("@Aerocode:testes_qualidade");
+    if (salvo) {
+      setTestes(JSON.parse(salvo));
+    } else {
+      const lista: TesteQualidade[] = [
+        {
+          id: "T-001",
+          aeronave: "EMB-314",
+          tipo: "Segurança",
+          resultado: "Aprovado",
+        },
+        { id: "T-002", aeronave: "KC-390", tipo: "Motor", resultado: "Falha" },
+      ];
+      setTestes(lista);
+      localStorage.setItem("@Aerocode:testes_qualidade", JSON.stringify(lista));
+    }
+  }, []);
 
-function Testes() {
+  const handleExcluir = (id: string) => {
+    if (window.confirm("Deseja deletar este registro de teste?")) {
+      const novo = testes.filter((t) => t.id !== id);
+      setTestes(novo);
+      localStorage.setItem("@Aerocode:testes_qualidade", JSON.stringify(novo));
+    }
+  };
+
   return (
     <div className={styles.pageStyle}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1>Testes de Qualidade</h1>
-          <Link to="/montagem" className={styles.my_link}>
-            Voltar
-          </Link>
-          <Link to="/novo-teste" className={styles.my_link}>
-            + Adicionar Teste
-          </Link>
+          <h1>✔️ Controle de Qualidade</h1>
+          <div className={styles.headerBtns}>
+            <Link to="/montagem" className={styles.my_link}>
+              Voltar
+            </Link>
+            <Link to="/novo-teste" className={styles.my_link_add}>
+              + Novo Teste
+            </Link>
+          </div>
         </header>
 
         <div className={styles.gridTestes}>
-          {listaTestes.map((teste) => (
-            <div key={teste.id} className={styles.cardTeste}>
-              <h3>{teste.aeronave}</h3>
+          {testes.map((t) => (
+            <div key={t.id} className={styles.cardTeste}>
+              <div className={styles.cardHeader}>
+                <h3>{t.aeronave}</h3>
+                <span className={`${styles.status} ${styles[t.resultado]}`}>
+                  {t.resultado}
+                </span>
+              </div>
               <p>
-                <strong>ID:</strong> {teste.id}
+                <strong>ID:</strong> {t.id}
               </p>
               <p>
-                <strong>Tipo:</strong> {teste.tipo}
+                <strong>Tipo:</strong> {t.tipo}
               </p>
-              <span className={`${styles.status} ${styles[teste.resultado]}`}>
-                {teste.resultado}
-              </span>
               <button
-                onClick={() => {
-                  if (window.confirm(`Deseja excluir o teste ${teste.nome}?`)) {
-                    alert("Teste removida ");
-                  }
-                }}
+                onClick={() => handleExcluir(t.id)}
                 className={styles.btnDeletar}
               >
-                Excluir
+                Excluir Registro
               </button>
             </div>
           ))}
@@ -68,6 +75,6 @@ function Testes() {
       </div>
     </div>
   );
-}
+};
 
 export default Testes;

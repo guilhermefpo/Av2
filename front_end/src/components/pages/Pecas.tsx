@@ -1,33 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Pecas.module.css";
 import { Link } from "react-router-dom";
+import { Peca } from "../index";
 
-interface Peca {
-  id: number;
-  nome: string;
-  quantidade: number;
-  status: "Em estoque" | "Esgotado" | "Pedido solicitado";
-}
+const Pecas: React.FC = () => {
+  const [estoque, setEstoque] = useState<Peca[]>([]);
 
-const estoque: Peca[] = [
-  { id: 1, nome: "Turbina Turbofan", quantidade: 4, status: "Em estoque" },
-  { id: 2, nome: "Flaps de Asa", quantidade: 12, status: "Em estoque" },
-  { id: 3, nome: "Painel Aviônico", quantidade: 0, status: "Esgotado" },
-  { id: 4, nome: "Rebite de Titânio", quantidade: 500, status: "Em estoque" },
-];
+  useEffect(() => {
+    const salvo = localStorage.getItem("@Aerocode:estoque_pecas");
+    if (salvo) {
+      setEstoque(JSON.parse(salvo));
+    } else {
+      const inicial: Peca[] = [
+        {
+          id: 1,
+          nome: "Turbina Turbofan",
+          quantidade: 4,
+          status: "Em estoque",
+        },
+        { id: 2, nome: "Painel Aviônico", quantidade: 0, status: "Esgotado" },
+      ];
+      setEstoque(inicial);
+      localStorage.setItem("@Aerocode:estoque_pecas", JSON.stringify(inicial));
+    }
+  }, []);
 
-function Pecas() {
+  const handleDeletar = (id: number) => {
+    if (window.confirm("Remover esta peça do inventário?")) {
+      const novo = estoque.filter((p) => p.id !== id);
+      setEstoque(novo);
+      localStorage.setItem("@Aerocode:estoque_pecas", JSON.stringify(novo));
+    }
+  };
+
   return (
     <div className={styles.pageStyle}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1>Inventário de Peças</h1>
-          <Link to="/montagem" className={styles.my_link}>
-            Voltar para Montagem
-          </Link>
-          <Link to="/nova-peca" className={styles.my_link}>
-            + Adicionar Peça
-          </Link>
+          <h1>📦 Inventário de Peças</h1>
+          <div className={styles.btns}>
+            <Link to="/montagem" className={styles.my_link}>
+              Voltar
+            </Link>
+            <Link to="/nova-peca" className={styles.my_link_add}>
+              + Adicionar
+            </Link>
+          </div>
         </header>
 
         <table className={styles.tabela}>
@@ -37,13 +55,13 @@ function Pecas() {
               <th>Nome da Peça</th>
               <th>Qtd.</th>
               <th>Status</th>
-              <th></th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {estoque.map((peca) => (
               <tr key={peca.id}>
-                <td>{peca.id}</td>
+                <td>#{peca.id}</td>
                 <td>{peca.nome}</td>
                 <td>{peca.quantidade}</td>
                 <td className={styles[peca.status.replace(/\s/g, "")]}>
@@ -51,13 +69,7 @@ function Pecas() {
                 </td>
                 <td>
                   <button
-                    onClick={() => {
-                      if (
-                        window.confirm(`Deseja excluir a peça ${peca.nome}?`)
-                      ) {
-                        alert("Peça removida ");
-                      }
-                    }}
+                    onClick={() => handleDeletar(peca.id)}
                     className={styles.btnDeletar}
                   >
                     Excluir
@@ -70,6 +82,6 @@ function Pecas() {
       </div>
     </div>
   );
-}
+};
 
 export default Pecas;

@@ -1,38 +1,85 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import type {
+  Aeronave,
+  TipoAeronave,
+  StatusEtapa,
+  NivelPermissao,
+} from "../index";
 import styles from "./NovoAviao.module.css";
 import aviaoImg from "../../assets/aviao.png";
 
 const NovoAviao: React.FC = () => {
   const navigate = useNavigate();
 
-  const cargo = localStorage.getItem("@Aerocode:cargo") || "Operador";
-
-  const eAdmin = cargo === "ADM";
+  const cargo = localStorage.getItem("@Aerocode:cargo") as NivelPermissao;
+  const eAdmin = cargo === NivelPermissao.ADMINISTRADOR;
 
   useEffect(() => {
     if (!eAdmin) {
       alert(
-        "Acesso Negado: Apenas Administradores podem iniciar novos projetos.",
+        "Acesso Negado: Apenas Administradores podem registrar novas aeronaves.",
       );
       navigate("/gestao");
     }
   }, [eAdmin, navigate]);
 
+  const [codigo, setCodigo] = useState("");
   const [modelo, setModelo] = useState("");
-  const [status, setStatus] = useState<"Iniciado" | "Em Teste" | "Atrasado">(
-    "Em Teste",
-  );
-  const [data, setData] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [tipo, setTipo] = useState<TipoAeronave>(TipoAeronave.COMERCIAL);
+  const [capacidade, setCapacidade] = useState<number>(0);
+  const [alcance, setAlcance] = useState<number>(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!eAdmin) return;
+    const avioesSalvos: Aeronave[] = JSON.parse(
+      localStorage.getItem("@Aerocode:avioes_db") || "[]",
+    );
 
-    console.log("Cadastrando avião:", { modelo, status, data, descricao });
-    alert("Projeto iniciado com sucesso na Aerocode!");
+    if (
+      avioesSalvos.some((a) => a.codigo.toUpperCase() === codigo.toUpperCase())
+    ) {
+      alert("Erro: Já existe uma aeronave registrada com este código.");
+      return;
+    }
+
+    const etapasIniciais = [
+      {
+        ordem: 1,
+        nome: "Climatização de Fuselagem",
+        status: StatusEtapa.PENDENTE,
+      },
+      { ordem: 2, nome: "Rebitagem Orbital", status: StatusEtapa.PENDENTE },
+      {
+        ordem: 3,
+        nome: "Montagem do Trem de Pouso",
+        status: StatusEtapa.PENDENTE,
+      },
+      {
+        ordem: 4,
+        nome: "Instalação de Aviônicos",
+        status: StatusEtapa.PENDENTE,
+      },
+    ];
+
+    const novaAeronave: Aeronave = {
+      codigo: codigo.toUpperCase(),
+      modelo,
+      tipo,
+      capacidade,
+      alcance,
+      pecas: [],
+      etapas: etapasIniciais,
+      testes: [],
+      dataEntrega: "",
+    };
+
+    // Persistência
+    avioesSalvos.push(novaAeronave);
+    localStorage.setItem("@Aerocode:avioes_db", JSON.stringify(avioesSalvos));
+
+    alert(`Sucesso! Aeronave ${codigo} enviada para a linha de produção.`);
     navigate("/gestao");
   };
 
@@ -42,53 +89,83 @@ const NovoAviao: React.FC = () => {
     <div className={styles.pageStyle}>
       <section className={styles.contentGrid}>
         <div className={styles.aviaoImage}>
-          <img src={aviaoImg} alt="Avião AEROCODE" />
+          <img src={aviaoImg} alt="Desenho Técnico Aeronave" />
+          <div className={styles.badgeInfo}>
+            <span>Status: Novo Projeto</span>
+          </div>
         </div>
+
         <div className={styles.formContainer}>
-          <h2 className={styles.title}>Novo Projeto</h2>
+          <h2 className={styles.title}>Registrar Aeronave</h2>
           <p className={styles.subtitle}>
-            Inicie a montagem de uma nova aeronave (Perfil:{" "}
-            <strong>{cargo}</strong>)
+            Insira os dados técnicos para iniciar a montagem.
           </p>
 
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Modelo da Aeronave (ex: Boeing 737)"
-              className={styles.input_style}
-              value={modelo}
-              onChange={(e) => setModelo(e.target.value)}
-              required
-            />
+          <form onSubmit={handleSubmit} className={styles.formElement}>
+            <div className={styles.inputGroup}>
+              <label>Prefixo / Código Único</label>
+              <input
+                type="text"
+                placeholder="Ex: EMB-314"
+                className={styles.input_style}
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value)}
+                required
+              />
+            </div>
 
-            <select
-              className={styles.input_style}
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-            >
-              <option value="Em Teste">Em Teste</option>
-              <option value="Iniciado">Iniciado</option>
-              <option value="Atrasado">Atrasado</option>
-            </select>
+            <div className={styles.inputGroup}>
+              <label>Modelo Comercial</label>
+              <input
+                type="text"
+                placeholder="Ex: Super Tucano"
+                className={styles.input_style}
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                required
+              />
+            </div>
 
-            <input
-              type="date"
-              className={styles.input_style}
-              value={data}
-              onChange={(e) => setData(e.target.value)}
-              required
-            />
+            <div className={styles.inputGroup}>
+              <label>Categoria de Uso</label>
+              <select
+                className={styles.input_style}
+                value={tipo}
+                onChange={(e) => setTipo(e.target.value as TipoAeronave)}
+              >
+                <option value={TipoAeronave.COMERCIAL}>Comercial</option>
+                <option value={TipoAeronave.MILITAR}>Militar</option>
+              </select>
+            </div>
 
-            <textarea
-              placeholder="Descrição do projeto (opcional)"
-              className={styles.textarea_style}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-            />
+            <div className={styles.row}>
+              <div className={styles.inputGroup}>
+                <label>Capacidade (Passageiros)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  className={styles.input_style}
+                  value={capacidade}
+                  onChange={(e) => setCapacidade(Number(e.target.value))}
+                  required
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label>Alcance Máx (Km)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  className={styles.input_style}
+                  value={alcance}
+                  onChange={(e) => setAlcance(Number(e.target.value))}
+                  required
+                />
+              </div>
+            </div>
 
             <div className={styles.actions}>
               <button type="submit" className={styles.btnSalvar}>
-                Iniciar Projeto
+                🚀 Iniciar Produção
               </button>
               <Link to="/gestao" className={styles.cancelarLink}>
                 Cancelar

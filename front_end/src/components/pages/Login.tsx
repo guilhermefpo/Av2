@@ -1,21 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { NivelPermissao } from "../index";
 import styles from "./Login.module.css";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
-  const [nivelAcesso, setNivelAcesso] = useState("");
   const [senha, setSenha] = useState("");
+  const [nivelAcesso, setNivelAcesso] = useState<NivelPermissao | "">("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const usuarios = localStorage.getItem("@Aerocode:usuarios_db");
+    if (!usuarios) {
+      const adminPadrao: Funcionario = {
+        id: "1",
+        nome: "Engenheiro Chefe",
+        telefone: "123",
+        endereco: "Hangar 1",
+        usuario: "admin",
+        senha: "123",
+        cargo: "Engenheiro",
+        setor: "Geral",
+        status: "Ativo",
+        nivelPermissao: NivelPermissao.ADMINISTRADOR,
+      };
+      localStorage.setItem(
+        "@Aerocode:usuarios_db",
+        JSON.stringify([adminPadrao]),
+      );
+    }
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    localStorage.setItem("@Aerocode:usuario", usuario);
-    localStorage.setItem("@Aerocode:cargo", nivelAcesso);
-    localStorage.setItem("@Aerocode:senha", senha);
+    const usuariosCadastrados: Funcionario[] = JSON.parse(
+      localStorage.getItem("@Aerocode:usuarios_db") || "[]",
+    );
 
-    navigate("/gestao");
+    const userFound = usuariosCadastrados.find(
+      (u) =>
+        u.usuario === usuario &&
+        u.senha === senha &&
+        u.nivelPermissao === nivelAcesso,
+    );
+
+    if (userFound) {
+      localStorage.setItem(
+        "@Aerocode:usuario_logado",
+        JSON.stringify(userFound),
+      );
+
+      localStorage.setItem("@Aerocode:cargo", userFound.nivelPermissao);
+
+      navigate("/gestao");
+    } else {
+      alert("Dados de acesso incorretos ou nível de permissão inválido.");
+    }
   };
 
   return (
@@ -36,13 +77,14 @@ function Login() {
           <select
             className={styles.input_style}
             value={nivelAcesso}
-            onChange={(e) => setNivelAcesso(e.target.value)}
+            onChange={(e) => setNivelAcesso(e.target.value as NivelPermissao)}
             required
           >
             <option value="">Nível de Acesso</option>
-            <option value="ADM">ADM</option>
-            <option value="Engenheiro">Engenheiro</option>
-            <option value="Operador">Operador</option>
+
+            <option value={NivelPermissao.ADMINISTRADOR}>Administrador</option>
+            <option value={NivelPermissao.ENGENHEIRO}>Engenheiro</option>
+            <option value={NivelPermissao.OPERADOR}>Operador</option>
           </select>
 
           <input
@@ -53,8 +95,6 @@ function Login() {
             onChange={(e) => setSenha(e.target.value)}
             required
           />
-          <br />
-          <br />
 
           <button type="submit" className={styles.btnLogar}>
             Logar

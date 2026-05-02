@@ -1,88 +1,86 @@
 import React, { useState, useEffect } from "react";
-import StatusEtapa from "../types/StatusEtapa";
+import type { StatusEtapa, NivelPermissao, Aeronave } from "../index";
 import styles from "./Controle.module.css";
 
 const Controle: React.FC = () => {
-  const [etapaAtual, setEtapaAtual] = useState<StatusEtapa>(() => {
-    const salvo = localStorage.getItem("@Aerocode:etapaProjeto");
-    return (salvo as StatusEtapa) || StatusEtapa.PENDENTE;
-  });
+  const [avioes, setAvioes] = useState<Aeronave[]>([]);
 
-  const cargo = localStorage.getItem("@Aerocode:cargo") || "Operador";
-  const eAdmin = cargo === "ADM";
+  const cargo = localStorage.getItem("@Aerocode:cargo") as NivelPermissao;
+  const eAdmin = cargo === NivelPermissao.ADMINISTRADOR;
 
-  const alterarEtapa = (novaEtapa: StatusEtapa) => {
-    setEtapaAtual(novaEtapa);
-    localStorage.setItem("@Aerocode:etapaProjeto", novaEtapa);
-  };
+  useEffect(() => {
+    const dados = localStorage.getItem("@Aerocode:avioes_db");
+    if (dados) setAvioes(JSON.parse(dados));
+  }, []);
 
-  const getSinalizacao = (status: StatusEtapa) => {
-    switch (status) {
-      case StatusEtapa.PENDENTE:
-        return { cor: "#888", icon: "⏳", texto: "Aguardando Início" };
-      case StatusEtapa.DISPONIVEL:
-        return { cor: "#17a2b8", icon: "📦", texto: "Peças Prontas" };
-      case StatusEtapa.ANDAMENTO:
-        return { cor: "#ffc107", icon: "🛠️", texto: "Em Montagem" };
-      case StatusEtapa.EMUSO:
-        return { cor: "#007bff", icon: "✈️", texto: "Sistemas em Teste" };
-      case StatusEtapa.DANIFICADA:
-        return { cor: "#dc3545", icon: "⚠️", texto: "Falha Detectada" };
-      case StatusEtapa.CONCLUIDA:
-        return { cor: "#28a745", icon: "✅", texto: "Pronto para Voo" };
-      default:
-        return { cor: "#333", icon: "❓", texto: "Desconhecido" };
+  const alterarStatusEtapa = (
+    aviaoCodigo: string,
+    ordemEtapa: number,
+    novoStatus: StatusEtapa,
+  ) => {
+    const novasAeronaves = [...avioes];
+    const aviaoIndex = novasAeronaves.findIndex(
+      (a) => a.codigo === aviaoCodigo,
+    );
+    const etapaIndex = novasAeronaves[aviaoIndex].etapas.findIndex(
+      (e) => e.ordem === ordemEtapa,
+    );
+
+    if (novoStatus === StatusEtapa.CONCLUIDA && etapaIndex > 0) {
+      if (
+        novasAeronaves[aviaoIndex].etapas[etapaIndex - 1].status !==
+        StatusEtapa.CONCLUIDA
+      ) {
+        alert(`BLOQUEIO: A etapa anterior precisa ser CONCLUÍDA primeiro.`);
+        return;
+      }
     }
+
+    novasAeronaves[aviaoIndex].etapas[etapaIndex].status = novoStatus;
+    setAvioes(novasAeronaves);
+    localStorage.setItem("@Aerocode:avioes_db", JSON.stringify(novasAeronaves));
   };
 
-  const sinal = getSinalizacao(etapaAtual);
+  if (avioes.length === 0) return null;
 
+  const aviaoAtivo = avioes[0];
   return (
-    <div className={styles.pageMontagem}>
-      <header className={styles.header}>
-        <h2 className={styles.titleSecundario}>
-          Monitoramento de Ciclo de Vida
-        </h2>
-        <div
-          className={styles.statusBanner}
-          style={{ backgroundColor: sinal.cor }}
-        >
-          <span className={styles.icon}>{sinal.icon}</span>
-          <div>
-            <strong>Etapa Atual: {etapaAtual}</strong>
-            <p>{sinal.texto}</p>
-          </div>
-        </div>
-      </header>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Linha de Produção: {aviaoAtivo.codigo}</h2>
+      <div className={styles.gridEtapas}>
+        {aviaoAtivo.etapas.map((etapa) => (
+          <div
+            key={etapa.ordem}
+            className={`${styles.cardEtapa} ${styles[etapa.status.toLowerCase()]}`}
+          >
+            <div className={styles.info}>
+              <span>
+                {etapa.ordem}. {etapa.nome}
+              </span>
+              <strong>{etapa.status}</strong>
+            </div>
 
-      <main className={styles.content}>
-        <section className={styles.cardInfo}>
-          <h3>Controle de Fluxo</h3>
-          <p>Selecione a etapa para atualizar o status da aeronave:</p>
-
-          <div className={styles.controles}>
             <select
-              value={etapaAtual}
-              onChange={(e) => alterarEtapa(e.target.value as StatusEtapa)}
-              className={styles.selectStatus}
+              value={etapa.status}
               disabled={!eAdmin}
+              onChange={(e) =>
+                alterarStatusEtapa(
+                  aviaoAtivo.codigo,
+                  etapa.ordem,
+                  e.target.value as StatusEtapa,
+                )
+              }
+              className={styles.select}
             >
-              {Object.values(StatusEtapa).map((status) => (
-                <option key={status} value={status}>
-                  {status}
+              {Object.values(StatusEtapa).map((s) => (
+                <option key={s} value={s}>
+                  {s}
                 </option>
               ))}
             </select>
-
-            {!eAdmin && (
-              <small className={styles.aviso}>
-                🔒 Perfil <strong>{cargo}</strong>: apenas visualização
-                permitida.
-              </small>
-            )}
           </div>
-        </section>
-      </main>
+        ))}
+      </div>
     </div>
   );
 };

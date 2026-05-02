@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { NivelPermissao, Funcionario } from "../index";
 import styles from "./CadastroUsuario.module.css";
 
 const CadastroUsuario: React.FC = () => {
@@ -8,7 +9,7 @@ const CadastroUsuario: React.FC = () => {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [cargo, setCargo] = useState("");
+  const [cargo, setCargo] = useState<NivelPermissao | "">("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,16 +19,32 @@ const CadastroUsuario: React.FC = () => {
       return;
     }
 
-    if (!cargo) {
-      alert("Selecione um nível de acesso (Cargo).");
+    const usuariosAtuais: Funcionario[] = JSON.parse(
+      localStorage.getItem("@Aerocode:usuarios_db") || "[]",
+    );
+
+    if (usuariosAtuais.some((u) => u.usuario === usuario)) {
+      alert("Este nome de usuário já existe.");
       return;
     }
 
-    console.log("Cadastrando usuário:", { nome, usuario, cargo });
+    const novoFuncionario: Funcionario = {
+      id: Math.random().toString(36).substr(2, 9),
+      nome,
+      usuario,
+      senha,
+      telefone: "",
+      endereco: "",
+      nivelPermissao: cargo as NivelPermissao,
+    };
 
-    alert(`Parabéns ${nome}, mais um usuário cadastrado com sucesso!`);
-    alert("Clique em Logar, preencha os campos e entre no site!");
+    usuariosAtuais.push(novoFuncionario);
+    localStorage.setItem(
+      "@Aerocode:usuarios_db",
+      JSON.stringify(usuariosAtuais),
+    );
 
+    alert(`Parabéns ${nome}, cadastro realizado! Agora você pode logar.`);
     navigate("/");
   };
 
@@ -59,13 +76,13 @@ const CadastroUsuario: React.FC = () => {
           <select
             className={styles.input_style}
             value={cargo}
-            onChange={(e) => setCargo(e.target.value)}
+            onChange={(e) => setCargo(e.target.value as NivelPermissao)}
             required
           >
             <option value="">Selecione seu Nível</option>
-            <option value="ADM">ADM</option>
-            <option value="Engenheiro">Engenheiro</option>
-            <option value="Operador">Operador</option>
+            <option value={NivelPermissao.ADMINISTRADOR}>Administrador</option>
+            <option value={NivelPermissao.ENGENHEIRO}>Engenheiro</option>
+            <option value={NivelPermissao.OPERADOR}>Operador</option>
           </select>
 
           <input
