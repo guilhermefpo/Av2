@@ -1,7 +1,5 @@
-console.log("LOG: Arquivo de tipos carregado com sucesso!");
-
 export enum NivelPermissao {
-  ADMINISTRADOR = "ADM",
+  ADMINISTRADOR = "ADMINISTRADOR",
   ENGENHEIRO = "ENGENHEIRO",
   OPERADOR = "OPERADOR",
 }
@@ -17,26 +15,39 @@ export enum StatusEtapa {
   CONCLUIDA = "Concluída",
 }
 
+export enum TipoPeca {
+  NACIONAL = "Nacional",
+  IMPORTADA = "Importada",
+}
+
+export enum StatusPeca {
+  PRODUCAO = "Em Produção",
+  TRANSPORTE = "Em Transporte",
+  PRONTA = "Pronta para Uso",
+}
+
 export interface Etapa {
   ordem: number;
   nome: string;
   status: StatusEtapa;
   prazo?: string;
-  responsaveis: string[];
+  responsaveisIds: string[];
 }
 
 export interface Peca {
-  id: number;
+  id: number | string;
   nome: string;
+  tipo: TipoPeca;
+  fornecedor: string;
+  status: StatusPeca;
   quantidade: number;
-  status: "Em estoque" | "Esgotado" | "Pedido solicitado";
 }
 
 export interface TesteQualidade {
   id: string;
-  aeronave: string;
-  tipo: "Segurança" | "Sistemas" | "Motor";
-  resultado: "Aprovado" | "Pendente" | "Falha";
+  tipo: "Elétrico" | "Hidráulico" | "Aerodinâmico";
+  resultado: "Aprovado" | "Reprovado";
+  data: string;
 }
 
 export interface Funcionario {
@@ -46,9 +57,6 @@ export interface Funcionario {
   endereco: string;
   usuario: string;
   senha: string;
-  cargo: string;
-  setor: string;
-  status: string;
   nivelPermissao: NivelPermissao;
 }
 
@@ -61,5 +69,6 @@ export interface Aeronave {
   etapas: Etapa[];
   pecas: Peca[];
   testes: TesteQualidade[];
-  dataEntrega?: string;
+  dataEntrega: string;
+  cliente: string;
 }

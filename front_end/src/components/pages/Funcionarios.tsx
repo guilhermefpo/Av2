@@ -1,61 +1,48 @@
-import React from "react";
-import styles from "./Funcionarios.module.css";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-interface Funcionario {
-  id: number;
-  nome: string;
-  cargo: string;
-  setor: string;
-  status: "Ativo" | "Em Férias" | "Licença";
-}
-
-const equipe: Funcionario[] = [
-  {
-    id: 101,
-    nome: "Carlos Andrade",
-    cargo: "Engenheiro",
-    setor: "Montagem",
-    status: "Ativo",
-  },
-  {
-    id: 102,
-    nome: "Ana Martins",
-    cargo: "Operador",
-    setor: "Testes",
-    status: "Ativo",
-  },
-  {
-    id: 103,
-    nome: "Ricardo Souza",
-    cargo: "ADM",
-    setor: "Segurança",
-    status: "Em Férias",
-  },
-  {
-    id: 104,
-    nome: "Beatriz Lima",
-    cargo: "Engenheiro",
-    setor: "Manutenção",
-    status: "Ativo",
-  },
-];
+import { api } from "../../services/api";
+import { NivelPermissao, type Funcionario } from "../index";
+import styles from "./Funcionarios.module.css";
 
 function Funcionarios() {
   const navigate = useNavigate();
+  const [equipe, setEquipe] = useState<Funcionario[]>([]);
 
+  const userJson = localStorage.getItem("@Aerocode:usuario_logado");
+  const usuarioLogado: Funcionario | null = userJson
+    ? JSON.parse(userJson)
+    : null;
+  const eAdmin = usuarioLogado?.nivelPermissao === NivelPermissao.ADMINISTRADOR;
 
-  const cargoUsuario = localStorage.getItem("@Aerocode:cargo") || "Operador";
-  const eAdmin = cargoUsuario === "ADM";
+  useEffect(() => {
+    const dados = api.getFuncionarios();
+    setEquipe(dados);
+  }, []);
 
-  const handleEdit = (id: number) => navigate(`/editar-funcionario/${id}`);
+  const handleEdit = (id: string) => navigate(`/editar-funcionario/${id}`);
 
-  const handleDelete = (nome: string) => {
-    if (window.confirm(`Excluir ${nome}?`)) alert("Removido!");
+  const handleDelete = (id: string, nome: string) => {
+    if (id === usuarioLogado?.id) {
+      alert(
+        "Operação Negada: Você não pode remover sua própria conta do sistema.",
+      );
+      return;
+    }
+
+    if (
+      window.confirm(
+        `Tem certeza que deseja remover ${nome} do quadro técnico?`,
+      )
+    ) {
+      const novaLista = equipe.filter((f) => f.id !== id);
+      setEquipe(novaLista);
+      localStorage.setItem("@Aerocode:funcionarios", JSON.stringify(novaLista));
+      alert("Funcionário removido com sucesso!");
+    }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("@Aerocode:cargo");
+    localStorage.removeItem("@Aerocode:usuario_logado");
     navigate("/");
   };
 
@@ -69,8 +56,8 @@ function Funcionarios() {
               Sair
             </button>
             {eAdmin && (
-              <Link to="/novo-funcionario" className={styles.my_link_add}>
-                + Novo
+              <Link to="/cadastro" className={styles.my_link_add}>
+                + Novo Colaborador
               </Link>
             )}
           </div>
@@ -80,18 +67,16 @@ function Funcionarios() {
           {equipe.map((f) => (
             <div key={f.id} className={styles.itemFuncionario}>
               <div className={styles.info}>
-                <strong>{f.nome}</strong>
-                <span>
-                  {f.cargo} | {f.setor}
-                </span>
+                <strong>
+                  {f.nome} {f.id === usuarioLogado?.id && "(Você)"}
+                </strong>
+                <span>{f.nivelPermissao}</span>
               </div>
 
               <div className={styles.acoes}>
                 <div className={styles.statusBadge}>
-                  <span
-                    className={`${styles.dot} ${styles[f.status.replace(" ", "")]}`}
-                  ></span>
-                  {f.status}
+                  {/* Correção da sintaxe do dot class */}
+                  <span className={styles.dot}></span>
                 </div>
 
                 <div className={styles.btnGroup}>
@@ -103,12 +88,15 @@ function Funcionarios() {
                       >
                         Editar
                       </button>
-                      <button
-                        className={styles.btnDeletar}
-                        onClick={() => handleDelete(f.nome)}
-                      >
-                        Excluir
-                      </button>
+
+                      {f.id !== usuarioLogado?.id && (
+                        <button
+                          className={styles.btnDeletar}
+                          onClick={() => handleDelete(f.id, f.nome)}
+                        >
+                          Excluir
+                        </button>
+                      )}
                     </>
                   ) : (
                     <span className={styles.tagLock}>🔒 Apenas Leitura</span>
@@ -117,6 +105,12 @@ function Funcionarios() {
               </div>
             </div>
           ))}
+
+          {equipe.length === 0 && (
+            <p className={styles.empty}>
+              Nenhum funcionário cadastrado no sistema.
+            </p>
+          )}
         </div>
       </div>
     </div>

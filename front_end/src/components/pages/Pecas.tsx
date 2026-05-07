@@ -1,35 +1,100 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Pecas.module.css";
-import { Link } from "react-router-dom";
-import { Peca } from "../index";
+import { Link, useNavigate } from "react-router-dom";
+import { StatusPeca, type Peca, type Aeronave } from "../index";
 
 const Pecas: React.FC = () => {
   const [estoque, setEstoque] = useState<Peca[]>([]);
+  const navigate = useNavigate();
+
+  const carregarEstoque = () => {
+    const salvo = localStorage.getItem("@Aerocode:pecas");
+    if (salvo) setEstoque(JSON.parse(salvo));
+  };
 
   useEffect(() => {
-    const salvo = localStorage.getItem("@Aerocode:estoque_pecas");
-    if (salvo) {
-      setEstoque(JSON.parse(salvo));
-    } else {
-      const inicial: Peca[] = [
-        {
-          id: 1,
-          nome: "Turbina Turbofan",
-          quantidade: 4,
-          status: "Em estoque",
-        },
-        { id: 2, nome: "Painel Aviônico", quantidade: 0, status: "Esgotado" },
-      ];
-      setEstoque(inicial);
-      localStorage.setItem("@Aerocode:estoque_pecas", JSON.stringify(inicial));
-    }
+    carregarEstoque();
   }, []);
 
-  const handleDeletar = (id: number) => {
-    if (window.confirm("Remover esta peça do inventário?")) {
-      const novo = estoque.filter((p) => p.id !== id);
-      setEstoque(novo);
-      localStorage.setItem("@Aerocode:estoque_pecas", JSON.stringify(novo));
+  const salvarNoLocalStorage = (novoEstoque: Peca[]) => {
+    localStorage.setItem("@Aerocode:pecas", JSON.stringify(novoEstoque));
+    setEstoque(novoEstoque);
+  };
+
+  const adicionarPecaNaAeronave = (pecaSelecionada: Peca) => {
+    const idAviao = localStorage.getItem("@Aerocode:aviao_selecionado");
+
+    if (!idAviao) {
+      alert(
+        "Nenhuma aeronave selecionada! Redirecionando para o Painel de Gestão...",
+      );
+      navigate("/gestao");
+      return;
+    }
+
+    const avioes: Aeronave[] = JSON.parse(
+      localStorage.getItem("@Aerocode:aeronaves") || "[]",
+    );
+
+    const novaListaAvioes = avioes.map((aviao) => {
+      if (aviao.codigo === idAviao) {
+        const pecasAtuais = aviao.pecas || [];
+        const jaExiste = pecasAtuais.find((p) => p.id === pecaSelecionada.id);
+
+        if (jaExiste) {
+          alert("Esta peça já consta no relatório desta aeronave.");
+          return aviao;
+        }
+
+        alert(
+          `Sucesso: ${pecaSelecionada.nome} instalada na aeronave ${aviao.modelo}.`,
+        );
+
+        return {
+          ...aviao,
+          pecas: [
+            ...pecasAtuais,
+            { ...pecaSelecionada, status: "Instalada" as any },
+          ],
+        };
+      }
+      return aviao;
+    });
+
+    localStorage.setItem(
+      "@Aerocode:aeronaves",
+      JSON.stringify(novaListaAvioes),
+    );
+    navigate("/gestao");
+  };
+
+  // FUNÇÃO DE EDITAR
+  const editarPeca = (peca: Peca) => {
+    const novoNome = prompt("Editar nome da peça:", peca.nome);
+    const novaQtd = prompt(
+      "Editar quantidade em estoque:",
+      String(peca.quantidade),
+    );
+
+    if (novoNome !== null && novaQtd !== null) {
+      const novoEstoque = estoque.map((p) =>
+        p.id === peca.id
+          ? { ...p, nome: novoNome, quantidade: Number(novaQtd), status: n }
+          : p,
+      );
+      salvarNoLocalStorage(novoEstoque);
+    }
+  };
+
+  // FUNÇÃO DE EXCLUIR
+  const excluirPeca = (id: number | string) => {
+    if (
+      window.confirm(
+        "Tem certeza que deseja remover esta peça do estoque geral?",
+      )
+    ) {
+      const novoEstoque = estoque.filter((p) => p.id !== id);
+      salvarNoLocalStorage(novoEstoque);
     }
   };
 
@@ -39,11 +104,11 @@ const Pecas: React.FC = () => {
         <header className={styles.header}>
           <h1>📦 Inventário de Peças</h1>
           <div className={styles.btns}>
-            <Link to="/montagem" className={styles.my_link}>
-              Voltar
+            <Link to="/gestao" className={styles.my_link}>
+              Voltar ao Painel
             </Link>
             <Link to="/nova-peca" className={styles.my_link_add}>
-              + Adicionar
+              + Nova Peça
             </Link>
           </div>
         </header>
@@ -51,7 +116,7 @@ const Pecas: React.FC = () => {
         <table className={styles.tabela}>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Cód.</th>
               <th>Nome da Peça</th>
               <th>Qtd.</th>
               <th>Status</th>
@@ -61,24 +126,49 @@ const Pecas: React.FC = () => {
           <tbody>
             {estoque.map((peca) => (
               <tr key={peca.id}>
-                <td>#{peca.id}</td>
-                <td>{peca.nome}</td>
-                <td>{peca.quantidade}</td>
-                <td className={styles[peca.status.replace(/\s/g, "")]}>
-                  {peca.status}
-                </td>
                 <td>
+                  <strong>#{peca.id}</strong>
+                </td>
+                <td>{peca.nome}</td>
+                <td>{peca.quantidade} un.</td>
+                <td>
+                  <span
+                    className={`${styles.statusLabel} ${styles[peca.status?.toLowerCase().replace(/\s/g, "")] || ""}`}
+                  >
+                    {peca.status}
+                  </span>
+                </td>
+                <td className={styles.acoes}>
                   <button
-                    onClick={() => handleDeletar(peca.id)}
+                    onClick={() => adicionarPecaNaAeronave(peca)}
+                    className={styles.btnVincular}
+                    title="Instalar na aeronave selecionada"
+                  >
+                    Instalar
+                  </button>
+                  <button
+                    onClick={() => editarPeca(peca)}
+                    className={styles.btnEditar}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => excluirPeca(peca.id)}
                     className={styles.btnDeletar}
                   >
-                    Excluir
+                    🗑️
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {estoque.length === 0 && (
+          <p className={styles.empty}>
+            Nenhuma peça cadastrada no estoque geral.
+          </p>
+        )}
       </div>
     </div>
   );

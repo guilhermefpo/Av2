@@ -40,6 +40,16 @@
   font-weight: bold;
 }
 
+.my_link_add {
+  background-color: #003366;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  margin-left: 9px;
+  border-radius: 8px;
+}
+
 .gridTestes {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

@@ -1,54 +1,84 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../services/api";
+import { NivelPermissao, type Funcionario } from "../index";
 import styles from "./CadastroGeral.module.css";
 
 export default function NovoFuncionario() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [setor, setSetor] = useState("");
+  const [nivel, setNivel] = useState<NivelPermissao | "">("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Novo funcionário cadastrado na Aerocode!");
-    navigate("/funcionarios");
+
+    const novoFunc: Funcionario = {
+      id: Math.random().toString(36).substr(2, 9).toUpperCase(),
+      nome,
+      usuario:
+        nome.toLowerCase().split(" ")[0] + Math.floor(Math.random() * 100),
+      senha: "123",
+      nivelPermissao: nivel as NivelPermissao,
+      telefone: "",
+      endereco: "",
+    };
+
+    try {
+      api.saveFuncionario(novoFunc);
+      alert(
+        `Colaborador ${nome} cadastrado com sucesso!\nUsuário: ${novoFunc.usuario}`,
+      );
+      navigate("/funcionarios");
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   return (
     <div className={styles.pageStyle}>
       <form className={styles.formCard} onSubmit={handleSubmit}>
-        <h2>Novo Funcionário</h2>
+        <h2>Novo Registro de Colaborador</h2>
+        <p className={styles.subtitle}>Preencha os dados básicos de acesso.</p>
 
-        <input
-          type="text"
-          placeholder="Nome Completo"
-          className={styles.input}
-          onChange={(e) => setNome(e.target.value)}
-          required
-        />
+        <div className={styles.inputGroup}>
+          <label>Nome Completo</label>
+          <input
+            type="text"
+            placeholder="Ex: João Silva"
+            className={styles.input}
+            onChange={(e) => setNome(e.target.value)}
+            required
+          />
+        </div>
 
-        <select
-          className={styles.input}
-          onChange={(e) => setCargo(e.target.value)}
-          required
-        >
-          <option value="">Selecione o Cargo</option>
-          <option value="Operador">Operador</option>
-          <option value="ADM">ADM</option>
-          <option value="Engenheiro">Engenheiro</option>
-        </select>
+        <div className={styles.inputGroup}>
+          <label>Nível de Acesso</label>
+          <select
+            className={styles.input}
+            onChange={(e) => setNivel(e.target.value as NivelPermissao)}
+            required
+          >
+            <option value="">Selecione o Cargo</option>
+            <option value={NivelPermissao.OPERADOR}>Operador</option>
+            <option value={NivelPermissao.ENGENHEIRO}>Engenheiro</option>
+            <option value={NivelPermissao.ADMINISTRADOR}>
+              Administrador (ADM)
+            </option>
+          </select>
+        </div>
 
-        <input
-          type="text"
-          placeholder="Setor"
-          className={styles.input}
-          onChange={(e) => setSetor(e.target.value)}
-          required
-        />
-
-        <button type="submit" className={styles.btn}>
-          Cadastrar
-        </button>
+        <div className={styles.btnGroup}>
+          <button type="submit" className={styles.btn}>
+            🚀 Finalizar Cadastro
+          </button>
+          <button
+            type="button"
+            className={styles.btnVoltar}
+            onClick={() => navigate("/funcionarios")}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );

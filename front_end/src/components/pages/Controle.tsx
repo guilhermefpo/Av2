@@ -1,74 +1,116 @@
 import React, { useState, useEffect } from "react";
-import type { StatusEtapa, NivelPermissao, Aeronave } from "../index";
+import { type Aeronave, StatusEtapa, NivelPermissao } from "../index";
+import { api } from "../../services/api";
 import styles from "./Controle.module.css";
 
 const Controle: React.FC = () => {
   const [avioes, setAvioes] = useState<Aeronave[]>([]);
+  const [codigoAtivo, setCodigoAtivo] = useState<string | null>(null);
 
-  const cargo = localStorage.getItem("@Aerocode:cargo") as NivelPermissao;
-  const eAdmin = cargo === NivelPermissao.ADMINISTRADOR;
+  const userJson = localStorage.getItem("@Aerocode:usuario_logado");
+  const usuarioLogado = userJson ? JSON.parse(userJson) : null;
 
-  useEffect(() => {
-    const dados = localStorage.getItem("@Aerocode:avioes_db");
-    if (dados) setAvioes(JSON.parse(dados));
-  }, []);
+  const temPermissao =
+    usuarioLogado?.nivelPermissao === NivelPermissao.ADMINISTRADOR ||
+    usuarioLogado?.nivelPermissao === NivelPermissao.ENGENHEIRO;
 
-  const alterarStatusEtapa = (
-    aviaoCodigo: string,
-    ordemEtapa: number,
-    novoStatus: StatusEtapa,
-  ) => {
-    const novasAeronaves = [...avioes];
-    const aviaoIndex = novasAeronaves.findIndex(
-      (a) => a.codigo === aviaoCodigo,
-    );
-    const etapaIndex = novasAeronaves[aviaoIndex].etapas.findIndex(
-      (e) => e.ordem === ordemEtapa,
-    );
-
-    if (novoStatus === StatusEtapa.CONCLUIDA && etapaIndex > 0) {
-      if (
-        novasAeronaves[aviaoIndex].etapas[etapaIndex - 1].status !==
-        StatusEtapa.CONCLUIDA
-      ) {
-        alert(`BLOQUEIO: A etapa anterior precisa ser CONCLUÍDA primeiro.`);
-        return;
-      }
-    }
-
-    novasAeronaves[aviaoIndex].etapas[etapaIndex].status = novoStatus;
-    setAvioes(novasAeronaves);
-    localStorage.setItem("@Aerocode:avioes_db", JSON.stringify(novasAeronaves));
+  const carregarDados = () => {
+    setAvioes(api.getAeronaves());
+    setCodigoAtivo(localStorage.getItem("@Aerocode:aviao_selecionado"));
   };
 
-  if (avioes.length === 0) return null;
+  useEffect(() => {
+    carregarDados();
+    window.addEventListener("storage", carregarDados);
+    return () => window.removeEventListener("storage", carregarDados);
+  }, []);
 
-  const aviaoAtivo = avioes[0];
+  const atualizarEtapa = (
+    aviaoCodigo: string,
+    ordemEtapa: number,
+    novosDados: { nome?: string; status?: StatusEtapa },
+  ) => {
+    try {
+      const todasAeronaves = api.getAeronaves();
+      const novasAeronaves = todasAeronaves.map((aviao) => {
+        if (aviao.codigo === aviaoCodigo) {
+          const etapasAtualizadas = aviao.etapas.map((et) => {
+            if (et.ordem === ordemEtapa) {
+              return { ...et, ...novosDados };
+            }
+            return et;
+          });
+          return { ...aviao, etapas: etapasAtualizadas };
+        }
+        return aviao;
+      });
+
+      localStorage.setItem(
+        "@Aerocode:aeronaves",
+        JSON.stringify(novasAeronaves),
+      );
+      carregarDados();
+      window.dispatchEvent(new Event("storage"));
+    } catch (error: any) {
+      alert("Erro ao atualizar etapa: " + error.message);
+    }
+  };
+
+  const aviaoAtivo = avioes.find((a) => a.codigo === codigoAtivo);
+
+  if (!aviaoAtivo) {
+    return (
+      <div className={styles.container}>
+        <p className={styles.emptyMsg}>
+          Selecione uma aeronave na tabela acima para gerenciar a produção.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Linha de Produção: {aviaoAtivo.codigo}</h2>
+      <header className={styles.headerControle}>
+        <h2 className={styles.title}>
+          ⚙️ Painel de Engenharia:{" "}
+          <span className={styles.codigo}>{aviaoAtivo.codigo}</span>
+        </h2>
+        <span className={styles.modelo}>{aviaoAtivo.modelo}</span>
+      </header>
+
       <div className={styles.gridEtapas}>
         {aviaoAtivo.etapas.map((etapa) => (
           <div
             key={etapa.ordem}
-            className={`${styles.cardEtapa} ${styles[etapa.status.toLowerCase()]}`}
+            className={`${styles.cardEtapa} ${styles[etapa.status.replace(/\s+/g, "").toLowerCase()]}`}
           >
             <div className={styles.info}>
-              <span>
-                {etapa.ordem}. {etapa.nome}
-              </span>
-              <strong>{etapa.status}</strong>
+              <span className={styles.ordem}>{etapa.ordem}º Etapa</span>
+
+              {/* INPUT PARA EDITAR O NOME DA ETAPA */}
+              <input
+                type="text"
+                className={styles.inputNomeEtapa}
+                value={etapa.nome}
+                disabled={!temPermissao}
+                onChange={(e) =>
+                  atualizarEtapa(aviaoAtivo.codigo, etapa.ordem, {
+                    nome: e.target.value,
+                  })
+                }
+                placeholder="Nome da etapa..."
+              />
+
+              <div className={styles.statusBadge}>{etapa.status}</div>
             </div>
 
             <select
               value={etapa.status}
-              disabled={!eAdmin}
+              disabled={!temPermissao}
               onChange={(e) =>
-                alterarStatusEtapa(
-                  aviaoAtivo.codigo,
-                  etapa.ordem,
-                  e.target.value as StatusEtapa,
-                )
+                atualizarEtapa(aviaoAtivo.codigo, etapa.ordem, {
+                  status: e.target.value as StatusEtapa,
+                })
               }
               className={styles.select}
             >

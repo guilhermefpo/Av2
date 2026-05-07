@@ -1,57 +1,103 @@
 .pageStyle {
-  background-image: url("../../assets/aerocodelogo.png");
-  background-size: contain;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("../../assets/aerocodelogo.png");
+  background-size: 50%;
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
   width: 100vw;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: "image text";
+  grid-template-areas: "text image";
   align-items: center;
-}
-
-.pageStyle p {
-  text-align: center;
-  margin-bottom: 7px;
+  overflow: hidden;
 }
 
 .label {
+  grid-area: text;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
-  font-weight: bold;
-  grid-area: text;
-}
-
-.my_link {
-  background-color: #003366;
-  color: white;
-  text-decoration: none;
-  border: 2px solid #0055aa;
-  display: inline-block;
-  transition: 0.3s;
-  width: 200px;
+  gap: 20px;
+  padding: 40px;
   text-align: center;
 }
 
-.my_link:hover {
-  background-color: #0055aa;
+.userBadge {
+  background: #e2e8f0;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #2d3748;
+  margin-top: 10px;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my_link {
+  background-color: #1a365d;
+  color: white;
   text-decoration: none;
-  transform: translateY(-2px);
+  border: 1px solid #2b6cb0;
+  padding: 15px;
+  border-radius: 6px;
+  transition: 0.3s all;
+  width: 250px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.my_link:hover {
+  background-color: #2b6cb0;
+  transform: translateX(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.readOnly {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .aviao {
+  grid-area: image;
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-area: image;
+  perspective: 1000px;
 }
 
-.aviao img {
-  max-width: 90%;
+.fadeImage {
+  max-width: 85%;
   height: auto;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.3));
+  animation: fadeInOut 4s infinite ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateX(20px);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+  85% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateX(-20px);
+  }
 }

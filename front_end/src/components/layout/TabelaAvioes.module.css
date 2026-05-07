@@ -1,9 +1,19 @@
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   margin-top: 30px;
   width: 100%;
+}
+
+.titleTable {
+  color: #003366;
+  width: 90%;
+  max-width: 1000px;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  border-left: 5px solid #003366;
+  padding-left: 10px;
 }
 
 .tabela {
@@ -14,6 +24,7 @@
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   font-family: sans-serif;
+  background-color: white;
 }
 
 .tabela thead {
@@ -25,36 +36,89 @@
   padding: 15px;
   text-align: left;
   font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
 }
 
 .tabela td {
   padding: 12px 15px;
   border-bottom: 1px solid #eee;
   color: #333;
+  vertical-align: middle;
 }
 
-.status {
+.linhaInterativa {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.linhaInterativa:hover {
+  background-color: rgba(0, 85, 170, 0.05);
+}
+
+.infoCelular {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clienteTxt {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.badge {
   padding: 5px 12px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
-.EmTeste {
-  background-color: #fff3cd;
-  color: #856404;
+.comercial {
+  background-color: #e0f2fe;
+  color: #0369a1;
 }
 
-.Concluído {
-  background-color: #d4edda;
-  color: #155724;
+.militar {
+  background-color: #fef2f2;
+  color: #b91c1c;
 }
 
-.Atrasado {
-  background-color: #f8d7da;
-  color: #721c24;
+.acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
-.tabela tbody tr:hover {
-  background-color: rgba(0, 85, 170, 0.05);
+.btnEditar,
+.btnExcluir {
+  border: none;
+  background: #f1f5f9;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnEditar:hover {
+  background-color: #dbeafe;
+  transform: scale(1.1);
+}
+
+.btnExcluir:hover {
+  background-color: #fee2e2;
+  transform: scale(1.1);
+}
+
+.empty {
+  margin-top: 20px;
+  color: #64748b;
+  font-style: italic;
 }

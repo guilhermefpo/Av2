@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { NivelPermissao, Funcionario } from "../index";
+import { NivelPermissao, type Funcionario } from "../index";
+import { api } from "../../services/api";
 import styles from "./CadastroUsuario.module.css";
 
 const CadastroUsuario: React.FC = () => {
@@ -13,39 +14,29 @@ const CadastroUsuario: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (senha !== confirmarSenha) {
       alert("As senhas não coincidem.");
       return;
     }
 
-    const usuariosAtuais: Funcionario[] = JSON.parse(
-      localStorage.getItem("@Aerocode:usuarios_db") || "[]",
-    );
+    try {
+      const novoFuncionario: Funcionario = {
+        id: Math.random().toString(36).substring(2, 9),
+        nome,
+        usuario,
+        senha,
+        telefone: "",
+        endereco: "",
+        nivelPermissao: cargo as NivelPermissao,
+      };
 
-    if (usuariosAtuais.some((u) => u.usuario === usuario)) {
-      alert("Este nome de usuário já existe.");
-      return;
+      api.saveFuncionario(novoFuncionario);
+
+      alert(`Parabéns ${nome}, cadastro realizado com sucesso!`);
+      navigate("/");
+    } catch (error: any) {
+      alert(error.message);
     }
-
-    const novoFuncionario: Funcionario = {
-      id: Math.random().toString(36).substr(2, 9),
-      nome,
-      usuario,
-      senha,
-      telefone: "",
-      endereco: "",
-      nivelPermissao: cargo as NivelPermissao,
-    };
-
-    usuariosAtuais.push(novoFuncionario);
-    localStorage.setItem(
-      "@Aerocode:usuarios_db",
-      JSON.stringify(usuariosAtuais),
-    );
-
-    alert(`Parabéns ${nome}, cadastro realizado! Agora você pode logar.`);
-    navigate("/");
   };
 
   return (
@@ -79,7 +70,7 @@ const CadastroUsuario: React.FC = () => {
             onChange={(e) => setCargo(e.target.value as NivelPermissao)}
             required
           >
-            <option value="">Selecione seu Nível</option>
+            <option value="">Selecione seu Nível de Acesso</option>
             <option value={NivelPermissao.ADMINISTRADOR}>Administrador</option>
             <option value={NivelPermissao.ENGENHEIRO}>Engenheiro</option>
             <option value={NivelPermissao.OPERADOR}>Operador</option>

@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import type {
-  Aeronave,
+import {
+  type Aeronave,
   TipoAeronave,
   StatusEtapa,
   NivelPermissao,
+  type Funcionario,
 } from "../index";
+import { api } from "../../services/api";
 import styles from "./NovoAviao.module.css";
 import aviaoImg from "../../assets/aviao.png";
 
 const NovoAviao: React.FC = () => {
   const navigate = useNavigate();
 
-  const cargo = localStorage.getItem("@Aerocode:cargo") as NivelPermissao;
-  const eAdmin = cargo === NivelPermissao.ADMINISTRADOR;
+  const userJson = localStorage.getItem("@Aerocode:usuario_logado");
+  const usuarioLogado: Funcionario | null = userJson
+    ? JSON.parse(userJson)
+    : null;
+  const eAdmin = usuarioLogado?.nivelPermissao === NivelPermissao.ADMINISTRADOR;
 
   useEffect(() => {
     if (!eAdmin) {
       alert(
-        "Acesso Negado: Apenas Administradores podem registrar novas aeronaves.",
+        "Acesso Negado: Apenas Administradores podem registrar novos projetos.",
       );
       navigate("/gestao");
     }
@@ -26,6 +31,8 @@ const NovoAviao: React.FC = () => {
 
   const [codigo, setCodigo] = useState("");
   const [modelo, setModelo] = useState("");
+  const [cliente, setCliente] = useState("");
+  const [dataEntrega, setDataEntrega] = useState("");
   const [tipo, setTipo] = useState<TipoAeronave>(TipoAeronave.COMERCIAL);
   const [capacidade, setCapacidade] = useState<number>(0);
   const [alcance, setAlcance] = useState<number>(0);
@@ -33,14 +40,11 @@ const NovoAviao: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const avioesSalvos: Aeronave[] = JSON.parse(
-      localStorage.getItem("@Aerocode:avioes_db") || "[]",
-    );
-
+    const avioesSalvos = api.getAeronaves();
     if (
       avioesSalvos.some((a) => a.codigo.toUpperCase() === codigo.toUpperCase())
     ) {
-      alert("Erro: Já existe uma aeronave registrada com este código.");
+      alert("Erro: Este prefixo já está registrado em nossa frota.");
       return;
     }
 
@@ -49,38 +53,52 @@ const NovoAviao: React.FC = () => {
         ordem: 1,
         nome: "Climatização de Fuselagem",
         status: StatusEtapa.PENDENTE,
+        responsaveisIds: [],
       },
-      { ordem: 2, nome: "Rebitagem Orbital", status: StatusEtapa.PENDENTE },
+      {
+        ordem: 2,
+        nome: "Rebitagem Orbital",
+        status: StatusEtapa.PENDENTE,
+        responsaveisIds: [],
+      },
       {
         ordem: 3,
         nome: "Montagem do Trem de Pouso",
         status: StatusEtapa.PENDENTE,
+        responsaveisIds: [],
       },
       {
         ordem: 4,
         nome: "Instalação de Aviônicos",
         status: StatusEtapa.PENDENTE,
+        responsaveisIds: [],
       },
     ];
 
     const novaAeronave: Aeronave = {
       codigo: codigo.toUpperCase(),
       modelo,
+      cliente,
       tipo,
       capacidade,
       alcance,
-      pecas: [],
       etapas: etapasIniciais,
+      pecas: [],
       testes: [],
-      dataEntrega: "",
+      dataEntrega,
     };
 
-    // Persistência
-    avioesSalvos.push(novaAeronave);
-    localStorage.setItem("@Aerocode:avioes_db", JSON.stringify(avioesSalvos));
-
-    alert(`Sucesso! Aeronave ${codigo} enviada para a linha de produção.`);
-    navigate("/gestao");
+    try {
+      const novasAeronaves = [...avioesSalvos, novaAeronave];
+      localStorage.setItem(
+        "@Aerocode:aeronaves",
+        JSON.stringify(novasAeronaves),
+      );
+      alert(`Sucesso! Projeto ${codigo.toUpperCase()} iniciado.`);
+      navigate("/gestao");
+    } catch (error) {
+      alert("Erro ao salvar o projeto no sistema.");
+    }
   };
 
   if (!eAdmin) return null;
@@ -91,59 +109,84 @@ const NovoAviao: React.FC = () => {
         <div className={styles.aviaoImage}>
           <img src={aviaoImg} alt="Desenho Técnico Aeronave" />
           <div className={styles.badgeInfo}>
-            <span>Status: Novo Projeto</span>
+            <span>Status: Configuração de Projeto</span>
           </div>
         </div>
 
         <div className={styles.formContainer}>
           <h2 className={styles.title}>Registrar Aeronave</h2>
           <p className={styles.subtitle}>
-            Insira os dados técnicos para iniciar a montagem.
+            Inicie uma nova ordem de produção no hangar.
           </p>
 
           <form onSubmit={handleSubmit} className={styles.formElement}>
+            <div className={styles.row}>
+              <div className={styles.inputGroup}>
+                <label>Prefixo (Prefixo Único)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: PP-XYZ"
+                  className={styles.input_style}
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label>Modelo</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Legacy 650"
+                  className={styles.input_style}
+                  value={modelo}
+                  onChange={(e) => setModelo(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
             <div className={styles.inputGroup}>
-              <label>Prefixo / Código Único</label>
+              <label>Cliente (Operador/Dono)</label>
               <input
                 type="text"
-                placeholder="Ex: EMB-314"
+                placeholder="Ex: Embraer S.A. / Particular"
                 className={styles.input_style}
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value)}
+                value={cliente}
+                onChange={(e) => setCliente(e.target.value)}
                 required
               />
             </div>
 
             <div className={styles.inputGroup}>
-              <label>Modelo Comercial</label>
+              <label>Data Prevista de Entrega</label>
               <input
-                type="text"
-                placeholder="Ex: Super Tucano"
+                type="date"
                 className={styles.input_style}
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
+                value={dataEntrega}
+                onChange={(e) => setDataEntrega(e.target.value)}
                 required
               />
             </div>
 
+            <hr className={styles.divider} />
+
             <div className={styles.inputGroup}>
-              <label>Categoria de Uso</label>
+              <label>Categoria de Voo</label>
               <select
                 className={styles.input_style}
                 value={tipo}
                 onChange={(e) => setTipo(e.target.value as TipoAeronave)}
               >
-                <option value={TipoAeronave.COMERCIAL}>Comercial</option>
-                <option value={TipoAeronave.MILITAR}>Militar</option>
+                <option value={TipoAeronave.COMERCIAL}>✈️ Comercial</option>
+                <option value={TipoAeronave.MILITAR}>🎖️ Militar</option>
               </select>
             </div>
 
             <div className={styles.row}>
               <div className={styles.inputGroup}>
-                <label>Capacidade (Passageiros)</label>
+                <label>Capacidade (PAX)</label>
                 <input
                   type="number"
-                  placeholder="0"
                   className={styles.input_style}
                   value={capacidade}
                   onChange={(e) => setCapacidade(Number(e.target.value))}
@@ -151,10 +194,9 @@ const NovoAviao: React.FC = () => {
                 />
               </div>
               <div className={styles.inputGroup}>
-                <label>Alcance Máx (Km)</label>
+                <label>Alcance (Km)</label>
                 <input
                   type="number"
-                  placeholder="0"
                   className={styles.input_style}
                   value={alcance}
                   onChange={(e) => setAlcance(Number(e.target.value))}
@@ -165,10 +207,10 @@ const NovoAviao: React.FC = () => {
 
             <div className={styles.actions}>
               <button type="submit" className={styles.btnSalvar}>
-                🚀 Iniciar Produção
+                🚀 Enviar para Linha de Montagem
               </button>
               <Link to="/gestao" className={styles.cancelarLink}>
-                Cancelar
+                Voltar
               </Link>
             </div>
           </form>
