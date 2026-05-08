@@ -15,23 +15,6 @@ import NovoFuncionario from "./components/pages/NovoFuncionario";
 import EditarFuncionario from "./components/pages/EditarFuncionario";
 import "./index.css";
 
-const Protegida = ({ children }: { children: React.ReactNode }) => {
-  const usuario = localStorage.getItem("@Aerocode:usuario_logado");
-
-  const estaLogado = usuario !== null && usuario !== "";
-
-  if (!estaLogado) {
-    return <Navigate to="/" replace />;
-  }
-
-  return (
-    <>
-      <Header />
-      {children}
-    </>
-  );
-};
-
 function App() {
   return (
     <BrowserRouter>
@@ -42,81 +25,91 @@ function App() {
         <Route
           path="/gestao"
           element={
-            <Protegida>
+            <>
+              <Header />
               <Gestao />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/montagem"
           element={
-            <Protegida>
+            <>
+              <Header />
               <Montagem />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/pecas"
           element={
-            <Protegida>
+            <>
+              <Header />
               <Pecas />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/testes"
           element={
-            <Protegida>
+            <>
+              <Header />
               <Testes />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/funcionarios"
           element={
-            <Protegida>
+            <>
+              <Header />
               <Funcionarios />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/novo-aviao"
           element={
-            <Protegida>
+            <>
+              <Header />
               <NovoAviao />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/nova-peca"
           element={
-            <Protegida>
+            <>
+              <Header />
               <NovaPeca />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/novo-teste"
           element={
-            <Protegida>
+            <>
+              <Header />
               <NovoTeste />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/novo-funcionario"
           element={
-            <Protegida>
+            <>
+              <Header />
               <NovoFuncionario />
-            </Protegida>
+            </>
           }
         />
         <Route
           path="/editar-funcionario/:id"
           element={
-            <Protegida>
+            <>
+              <Header />
               <EditarFuncionario />
-            </Protegida>
+            </>
           }
         />
 

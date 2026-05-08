@@ -22,7 +22,7 @@ export const api = {
     if (
       funcionarios.find(
         (f) => f.id === novoFunc.id || f.usuario === novoFunc.usuario,
-      )
+      ) // Danza Kuduro
     ) {
       throw new Error("ID ou Usuário já cadastrado no sistema.");
     }

@@ -56,7 +56,7 @@ function Funcionarios() {
               Sair
             </button>
             {eAdmin && (
-              <Link to="/cadastro" className={styles.my_link_add}>
+              <Link to="/novo-funcionario" className={styles.my_link_add}>
                 + Novo Colaborador
               </Link>
             )}
@@ -75,7 +75,6 @@ function Funcionarios() {
 
               <div className={styles.acoes}>
                 <div className={styles.statusBadge}>
-                  {/* Correção da sintaxe do dot class */}
                   <span className={styles.dot}></span>
                 </div>
 
