@@ -232,11 +232,20 @@ Siga os passos abaixo para rodar o ambiente de desenvolvimento:
    ```
 
 4. **Execução do servidor de desenvolvimento:**
+
    ```bash
    npm run dev
    ```
 
+5. **Login ADM:**
+   ```bash
+   Login: admin
+   Senha: 123
+   ```
+
 > 💡 **Nota Técnica:** A aplicação abrirá por padrão em `http://localhost:5173`. Os dados são persistidos no **LocalStorage** do seu navegador. Caso deseje resetar o sistema, limpe os dados de navegação ou utilize o comando `localStorage.clear()` no console do desenvolvedor.
+
+> Para logar com outro usuário ir em {criar conta}, podendo logar como ADM, ENGENHEIRO e OPERADOR.
 
 ---
 
